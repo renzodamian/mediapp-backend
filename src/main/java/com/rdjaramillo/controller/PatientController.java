@@ -17,7 +17,7 @@ public class PatientController {
 
     @GetMapping("/all")
     public String sayHelloREST(){
-        Patient p = new Patient(1,"Renzo");
-        return patientService.sayHelloLogic(p);
+       // Patient p = new Patient(1,"Renzo");
+        return patientService.sayHelloLogic(null);
     }
 }
