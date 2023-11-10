@@ -3,6 +3,7 @@ package com.rdjaramillo.controller;
 import com.rdjaramillo.dto.PatientDTO;
 import com.rdjaramillo.model.Patient;
 import com.rdjaramillo.service.IPatientService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.Banner;
@@ -40,7 +41,7 @@ public class PatientController {
     }
 
     @PostMapping()
-    public ResponseEntity<PatientDTO> save(@RequestBody PatientDTO dto){
+    public ResponseEntity<PatientDTO> save(@Valid @RequestBody PatientDTO dto){
         Patient obj = service.save(convertToEntity(dto));
         //localhost:8080/patient/3
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getIdPatient()).toUri();
@@ -48,7 +49,7 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PatientDTO> update(@PathVariable("id") Integer id, @RequestBody PatientDTO dto){
+    public ResponseEntity<PatientDTO> update(@Valid  @PathVariable("id") Integer id, @RequestBody PatientDTO dto){
         Patient obj=  service.update(mapper.map(dto,Patient.class) ,id);
         return new ResponseEntity<>(convertToDto(obj),HttpStatus.OK);
     }
