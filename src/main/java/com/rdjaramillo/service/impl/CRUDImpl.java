@@ -8,10 +8,10 @@ import java.util.List;
 
 public abstract class CRUDImpl<T,ID> implements ICRUD<T,ID>{
 
-    //Repositorio que sea dinamico, segun quien lo invoque
+    // Repositorio que sea dinamico, segun quien lo invoque
     // pueda comportace de diferentes formas (POLIMORFISMO).
     // Puedo crear un metodo abstracto que segun quien lo implemente
-    // devulve una instancia segun lo correspondallame.
+    // devulve una instancia segun lo corresponda.
     protected  abstract IGenericRepository<T,ID> getRepository();
     @Override
     public T save(T t) {

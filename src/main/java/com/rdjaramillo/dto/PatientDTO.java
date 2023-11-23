@@ -16,12 +16,12 @@ public class PatientDTO {
 
     @NotNull
     @NotEmpty
-    @Size(min =3,max =70)
+    @Size(min =3,max =70, message = "{firstName.size}")
     private String firstName;
 
     @NotNull
     @NotEmpty
-    @Size(min =3,max =70)
+    @Size(min =3,max =70, message = "{lastName.size}")
     private String lastName;
 
     private String dni;

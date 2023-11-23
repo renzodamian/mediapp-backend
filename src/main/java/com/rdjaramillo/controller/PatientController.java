@@ -6,16 +6,19 @@ import com.rdjaramillo.service.IPatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.Banner;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/patient")
@@ -24,11 +27,12 @@ public class PatientController {
 
     //@Autowired
     private final IPatientService service;
+
+    @Qualifier("defaulMapper")
     private final ModelMapper mapper;
 
     @GetMapping()
     public ResponseEntity<List<PatientDTO>> findAll(){
-        ModelMapper modelMapper = new ModelMapper();
         List<PatientDTO>  lst = service.findAll().stream().map(
                 this::convertToDto).toList();
         return new ResponseEntity<>(lst, HttpStatus.OK);
@@ -59,6 +63,15 @@ public class PatientController {
 
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/hateoas/{id}")
+    public EntityModel<PatientDTO>findByIdHateoas(@PathVariable("id") Integer id){
+        EntityModel<PatientDTO> resource = EntityModel.of(convertToDto(service.findById(id)));
+        WebMvcLinkBuilder link1 = linkTo(methodOn(this.getClass()).findById(id));
+
+        resource.add(link1.withRel("patien- info"));
+        return  resource;
     }
 
     private PatientDTO convertToDto(Patient obj){

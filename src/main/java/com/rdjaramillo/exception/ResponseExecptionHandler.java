@@ -1,16 +1,14 @@
 package com.rdjaramillo.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
+import org.springframework.http.*;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 //Interpretar las exceptions que pasan por el proyecto
@@ -19,8 +17,15 @@ import java.time.LocalDateTime;
 public class ResponseExecptionHandler extends ResponseEntityExceptionHandler {
     //Creamos esta clase para capturar la execpcion
 
+    @ExceptionHandler(Exception.class)
+    //Intercepto  el tipo de execption Exception
+    public ResponseEntity<CustomErrorResponse> handleAllException(Exception ex, WebRequest request){
+        CustomErrorResponse errorResponse = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return  new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
-    //Este se peude trabajar en Spring Boot 2 , 1.5
+
+    //Este se puede trabajar en Spring Boot 2 , 1.5
    @ExceptionHandler(ModelNotFoundException.class)
     //Intercepto  el tipo de execption ModelNotFoundException
     public ResponseEntity<CustomErrorResponse> handleModelNotFoundException(ModelNotFoundException ex, WebRequest request){
@@ -50,6 +55,18 @@ public class ResponseExecptionHandler extends ResponseEntityExceptionHandler {
                 .build();
     }*/
 
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,HttpStatusCode status, WebRequest request) {
+        String msg = ex.getBindingResult().getFieldErrors().stream().map(
+                e -> e.getField()
+                        .concat(":")
+                        .concat(e.getDefaultMessage()
+                            .concat(""))
+                ).collect(Collectors.joining());
+
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), msg, request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    }
 
 
 }
