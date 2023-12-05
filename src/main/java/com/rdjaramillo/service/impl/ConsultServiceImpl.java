@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -35,5 +36,16 @@ public class ConsultServiceImpl extends CRUDImpl<Consult, Integer> implements IC
         consultRepository.save(consult);//Guardado Maestro Detalle
         exams.forEach(exam -> ceRepo.saveExam(consult.getIdConsult(), exam.getIdExam()));
         return consult;
+    }
+
+    @Override
+    public List<Consult> search(String dni, String fullname) {
+        return consultRepository.search(dni, fullname);
+    }
+
+    @Override
+    public List<Consult> searchByDates(LocalDateTime date1, LocalDateTime date2) {
+        final int OFFSET_DAYS =1;//Add on day
+        return consultRepository.searchByDates(date1, date2.plusDays(OFFSET_DAYS));
     }
 }

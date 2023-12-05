@@ -46,10 +46,11 @@ public class ExamController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ExamDTO> update(@PathVariable("id") Integer id, @RequestBody ExamDTO dto){
-
-        Exam obj=  service.update(mapper.map(dto, Exam.class) ,id);
-        return new ResponseEntity<>(convertToDto(obj),HttpStatus.OK);
+    public ResponseEntity<ExamDTO> update(@PathVariable("id") Integer id, @RequestBody ExamDTO dto) throws Exception {
+        Exam obj = service.update(convertToEntity(dto), id);
+        return new ResponseEntity<>(convertToDto(obj), HttpStatus.OK);
+        /*Exam obj=  service.update(mapper.map(dto, Exam.class) ,id);
+        return new ResponseEntity<>(convertToDto(obj),HttpStatus.OK);*/
     }
 
     @DeleteMapping("/{id}")

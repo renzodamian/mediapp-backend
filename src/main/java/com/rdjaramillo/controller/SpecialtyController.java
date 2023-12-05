@@ -46,15 +46,15 @@ public class SpecialtyController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<SpecialtyDTO> update(@PathVariable("id") Integer id, @RequestBody SpecialtyDTO dto){
-
-        Specialty obj=  service.update(mapper.map(dto, Specialty.class) ,id);
-        return new ResponseEntity<>(convertToDto(obj),HttpStatus.OK);
+    public ResponseEntity<SpecialtyDTO> update(@PathVariable("id") Integer id, @RequestBody SpecialtyDTO dto) throws Exception {
+        Specialty obj = service.update(convertToEntity(dto), id);
+        return new ResponseEntity<>(convertToDto(obj), HttpStatus.OK);
+        /*Specialty obj=  service.update(mapper.map(dto, Specialty.class) ,id);
+        return new ResponseEntity<>(convertToDto(obj),HttpStatus.OK);*/
     }
 
     @DeleteMapping("/{id}")
     public  ResponseEntity<Void> delete(@PathVariable("id") Integer id){
-
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -5,6 +5,7 @@ import com.rdjaramillo.dto.ConsultListExamDTO;
 import com.rdjaramillo.model.Consult;
 import com.rdjaramillo.model.Exam;
 import com.rdjaramillo.service.IConsultService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -51,17 +52,14 @@ public class ConsultController {
         return ResponseEntity.created(location).build();//.body(obj)
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<ConsultDTO> update(@PathVariable("id") Integer id, @RequestBody ConsultDTO dto){
-
-        Consult obj=  service.update(mapper.map(dto, Consult.class) ,id);
-        return new ResponseEntity<>(convertToDto(obj),HttpStatus.OK);
+    public ResponseEntity<ConsultDTO> update(@Valid @PathVariable("id") Integer id, @RequestBody ConsultDTO dto) throws Exception {
+        Consult obj = service.update(convertToEntity(dto), id);
+        return new ResponseEntity<>(convertToDto(obj), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public  ResponseEntity<Void> delete(@PathVariable("id") Integer id){
-
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

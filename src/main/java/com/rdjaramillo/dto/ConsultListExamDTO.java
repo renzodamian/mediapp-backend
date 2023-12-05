@@ -16,6 +16,7 @@ public class ConsultListExamDTO {
     @NotNull
     private ConsultDTO consult;
 
+    //@JsonProperty(value= lst_exam")
     @NotNull
     private List<ExamDTO> lstExam;
 

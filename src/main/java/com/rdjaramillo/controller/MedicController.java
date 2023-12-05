@@ -48,10 +48,11 @@ public class MedicController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<MedicDTO> update(@PathVariable("id") Integer id, @RequestBody MedicDTO dto){
-
-        Medic obj=  service.update(mapper.map(dto, Medic.class) ,id);
-        return new ResponseEntity<>(convertToDto(obj),HttpStatus.OK);
+    public ResponseEntity<MedicDTO> update(@PathVariable("id") Integer id, @RequestBody MedicDTO dto) throws Exception {
+        Medic obj = service.update(convertToEntity(dto), id);
+        return new ResponseEntity<>(convertToDto(obj), HttpStatus.OK);
+        /*Medic obj=  service.update(mapper.map(dto, Medic.class) ,id);
+        return new ResponseEntity<>(convertToDto(obj),HttpStatus.OK);*/
     }
 
     @DeleteMapping("/{id}")

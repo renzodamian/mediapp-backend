@@ -23,6 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/patient")
 @RequiredArgsConstructor
+//@CrossOrigin(origins="http://localhost:4200")
 public class PatientController {
 
     //@Autowired
@@ -53,14 +54,16 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PatientDTO> update(@Valid  @PathVariable("id") Integer id, @RequestBody PatientDTO dto){
-        Patient obj=  service.update(mapper.map(dto,Patient.class) ,id);
+    public ResponseEntity<PatientDTO> update(@Valid  @PathVariable("id") Integer id, @RequestBody PatientDTO dto) throws Exception {
+        dto.setIdPatient(id); //SE DEBE AGREGAR ESTO
+        Patient obj = service.update(convertToEntity(dto), id);
         return new ResponseEntity<>(convertToDto(obj),HttpStatus.OK);
+        /*Patient obj=  service.update(mapper.map(dto,Patient.class) ,id);
+        return new ResponseEntity<>(convertToDto(obj),HttpStatus.OK);*/
     }
 
     @DeleteMapping("/{id}")
     public  ResponseEntity<Void> delete(@PathVariable("id") Integer id){
-
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

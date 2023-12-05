@@ -4,6 +4,7 @@ import com.rdjaramillo.exception.ModelNotFoundException;
 import com.rdjaramillo.repository.IGenericRepository;
 import com.rdjaramillo.service.ICRUD;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 public abstract class CRUDImpl<T,ID> implements ICRUD<T,ID>{
@@ -19,7 +20,16 @@ public abstract class CRUDImpl<T,ID> implements ICRUD<T,ID>{
     }
 
     @Override
-    public T update(T t, ID id) {
+    public T update(T t, ID id) throws  Exception {
+        Class<?> clazz = t.getClass();
+        String className = t.getClass().getSimpleName();
+        String methodName = "setId" + className;  //genera el setIdPatient, setIdExam, etc
+        Method setIdMethod = clazz.getMethod(methodName, id.getClass());
+        setIdMethod.invoke(t, id);
+
+        getRepository()
+                .findById(id)
+                .orElseThrow(()->new ModelNotFoundException(("ID NOT FOUND" +id)));
         return getRepository().save(t);
     }
 
@@ -38,6 +48,9 @@ public abstract class CRUDImpl<T,ID> implements ICRUD<T,ID>{
 
     @Override
     public void delete(ID id) {
+        getRepository()
+                .findById(id)
+                .orElseThrow(()->new ModelNotFoundException(("ID NOT FOUND" +id)));
         getRepository().deleteById(id);
 
     }
